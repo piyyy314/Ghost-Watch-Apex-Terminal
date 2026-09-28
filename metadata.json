@@ -1,0 +1,6 @@
+{
+  "name": "Ghost-Watch Apex Terminal",
+  "description": "Integrated Systems Architecture for Ghost-Watch Operations and the Advanced Canary Trap Ecosystem.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
