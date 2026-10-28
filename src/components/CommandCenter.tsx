@@ -8,6 +8,7 @@ import { motion } from 'motion/react';
 import { Lure, ThreatEvent, MicroTunnelEndpoint, LazarusStats, GorgonAntiTamperState } from '../types';
 import { lazarusMeshInstance } from '../services/LazarusMesh';
 import { gorgonAntiTamperInstance } from '../services/GorgonAntiTamper';
+import SystemHealthWidget from './SystemHealthWidget';
 
 interface CommandCenterProps {
   lures: Lure[];
@@ -252,10 +253,13 @@ export default function CommandCenter({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-full">
-      
-      {/* LEFT COLUMN: Hardware anchor, LazarusMesh status & Gorgon Anti-Tamper (5 cols) */}
-      <div className="lg:col-span-5 flex flex-col gap-4">
+    <div className="flex flex-col gap-5 h-full">
+      {/* Real-Time System Health Widget (CPU, RAM, Disk utilization via Recharts) */}
+      <SystemHealthWidget onAddConsoleLog={onAddConsoleLog} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
+        {/* LEFT COLUMN: Hardware anchor, LazarusMesh status & Gorgon Anti-Tamper (5 cols) */}
+        <div className="lg:col-span-5 flex flex-col gap-4">
         
         {/* Hardware Binding Card */}
         <div className="p-4 rounded-lg border-2 border-cyber-border bg-cyber-panel/60 backdrop-blur-sm relative overflow-hidden flex flex-col gap-3">
@@ -491,7 +495,7 @@ export default function CommandCenter({
 
         </div>
       </div>
-
+    </div>
     </div>
   );
 }

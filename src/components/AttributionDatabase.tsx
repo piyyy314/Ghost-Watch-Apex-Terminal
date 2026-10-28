@@ -4,11 +4,12 @@ import {
   Trash2, ShieldAlert, CheckCircle2, ExternalLink, Download, ChevronDown,
   ChevronUp, ChevronRight, Activity, Network, FileCode, Copy, Check,
   Search, Filter, Clock, Eye, AlertTriangle, ShieldCheck, Zap, RefreshCw,
-  Layers, Lock, Bug, ArrowRight
+  Layers, Lock, Bug, ArrowRight, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Lure, ThreatEvent, PacketAnalysisTrace } from '../types';
 import { generatePacketTraceForThreat, createSimulatedPcapBlob } from '../services/PacketAnalysisEngine';
+import { generateThreatForensicPdfReport } from '../services/ThreatPdfReportGenerator';
 
 interface AttributionDatabaseProps {
   lures: Lure[];
@@ -113,6 +114,27 @@ export default function AttributionDatabase({
     downloadAnchor.click();
     downloadAnchor.remove();
     onAddConsoleLog(`ADB Forensic Ledger exported (${lures.length} lures, ${threats.length} threat traces).`, 'success');
+  };
+
+  const handleDownloadPdfReport = () => {
+    try {
+      const doc = generateThreatForensicPdfReport({
+        threats: threats.map(t => ({
+          ...t,
+          packetTrace: getPacketTrace(t)
+        })),
+        lures,
+        hardwareBoundId: 'HB-9982-AX-2026',
+        analystHandle: 'Director P-01 (Apex Operations)'
+      });
+
+      const filename = `ghostwatch_threat_forensic_report_${Date.now()}.pdf`;
+      doc.save(filename);
+      onAddConsoleLog(`Forensic PDF Threat Audit Report exported successfully (${threats.length} incidents compiled).`, 'success');
+    } catch (err) {
+      console.error('Failed to generate PDF report:', err);
+      onAddConsoleLog('Error compiling forensic PDF report. Check console logs.', 'error');
+    }
   };
 
   const handleSimulateIntruderInteraction = (lureId: string) => {
@@ -228,6 +250,17 @@ export default function AttributionDatabase({
               </span>
             </button>
           </div>
+
+          {/* Export PDF Report Button */}
+          <button
+            type="button"
+            onClick={handleDownloadPdfReport}
+            className="text-cyber-green hover:text-white transition-all border border-cyber-green/40 hover:border-cyber-green bg-cyber-green/10 hover:bg-cyber-green/20 rounded px-3 py-1.5 text-xs flex items-center gap-1.5 font-mono cursor-pointer shadow-[0_0_10px_rgba(5,243,161,0.15)]"
+            title="Download Formal Cyber-Forensic PDF Incident Audit Report"
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>EXPORT PDF REPORT</span>
+          </button>
 
           {/* Export JSON Button */}
           <button

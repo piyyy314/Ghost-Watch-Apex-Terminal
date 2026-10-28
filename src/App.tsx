@@ -640,6 +640,7 @@ export default function App() {
                   {activeTab === 'PALANTIR_ONTOLOGY' && !isWiped && (
                     <PalantirOntology 
                       lures={lures}
+                      threats={threatEvents}
                       onAddConsoleLog={addSystemLog}
                     />
                   )}
